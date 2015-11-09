@@ -26,27 +26,21 @@ output:
 class Solution {
 public:
     vector<vector<int>> getFactors(int n) {
-        vector<int> part;
-        vector<vector<int>> res;
-        if (n == 1) return res;
-        dfs(res, part, n, 2, false);
-        return res;
+        return factorHelper(n, 2);
     }
 private:
-    void dfs(vector<vector<int>>& res, vector<int>& part, int n, int start, bool include) {
-        if (n == 1) {
-            vector<int> tmp = part;
-            sort(tmp.begin(), tmp.end());
-            res.push_back(tmp);
-            return;
-        }
-        for (int i = start; i <= n; i++) {
+    vector<vector<int>> factorHelper(int n, int start) {
+        vector<vector<int>> res;
+        for (int i = start; i <= n / i; i++) {
             if (n % i == 0) {
-                if (n == i && !include) continue;
-                part.push_back(i);
-                dfs(res, part, n/i, i, true);
-                part.pop_back();
+                res.push_back({i, n / i});
+                vector<vector<int>> children = factorHelper(n / i, i);
+                for (int j = 0; j < children.size(); j++) {
+                    children[j].insert(children[j].begin(), i);
+                    res.push_back(children[j]);
+                }
             }
         }
+        return res;
     }
 };
