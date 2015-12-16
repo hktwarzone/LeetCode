@@ -1,5 +1,6 @@
 /*
 Shortest Distance from All Buildings
+
 You want to build a house on an empty land which reaches all buildings in the shortest amount of distance. 
 You are given a 2D grid of values 0, 1 or 2, where:
 
