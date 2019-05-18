@@ -8,19 +8,25 @@ T is "ece" which its length is 3.
 
 class Solution {
 public:
-    int lengthOfLongestSubstringKDistinct(string s, int k) {
-        int maxlength = 0;
+    /**
+     * @param s: A string
+     * @param k: An integer
+     * @return: An integer
+     */
+    int lengthOfLongestSubstringKDistinct(string &s, int k) {
+        vector<int> m(128, 0);
+        int count = 0;
+        int result = 0;
         int start = 0;
-        int dist = 0;
-        vector<int> count(128, 0);
         for (int i = 0; i < s.size(); i++) {
-            if (count[s[i]]++ == 0) dist++;
-            if (dist > k) {
-                while(--count[s[start++]] > 0);
-                dist--;
+            m[s[i]]++;
+            if (m[s[i]] == 1) count++;
+            while(count > k) {
+                if (m[s[start]] == 1) count--;
+                m[s[start++]]--;
             }
-            maxlength = max(maxlength, i - start + 1);
+            result = max(result, i - start + 1);
         }
-        return maxlength;
+        return result;
     }
 };
