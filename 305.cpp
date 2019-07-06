@@ -52,30 +52,26 @@ public:
         int dx[4] = {1,0,-1,0};
         int dy[4] = {0,1,0,-1};
         for (int i = 0; i < positions.size(); i++) {
-            count++;
-            int cx = positions[i].first;
-            int cy = positions[i].second;
-            int cid = cx * n + cy;
-            isIsland.insert(cid);
-            int cp = find(cid, parents);
-            for (int j = 0; j < 4; j++) {
-                int nx = cx + dx[j];
-                int ny = cy + dy[j];
-                int nid = nx * n + ny;
-                if (nx >= 0 && nx < m && ny >= 0 && ny < n && isIsland.count(nid) > 0) {
-                    cp = find(cid, parents);
-                    int np = find(nid, parents);
-                    if (np != cp) {
-                        count--;
-                        if (rank[cp] < rank[np]) {
-                            parents[cp] = np;
-                        }
-                        else if (rank[cp] > rank[np]) {
-                            parents[np] = cp;
-                        }
-                        else {
-                            parents[cp] = np;
-                            rank[np]++;
+            int cid = positions[i].first * n + positions[i].second;
+            if (isIsland(cid) == 0) { // skip duplicated island
+                count++;
+                isIsland.insert(cid);
+                for (int j = 0; j < 4; j++) {
+                    int nx = positions[i].first + dx[j];
+                    int ny = positions[i].second + dy[j];
+                    int nid = nx * n + ny;
+                    if (nx >= 0 && nx < m && ny >= 0 && ny < n && isIsland.count(nid) > 0) {
+                        int cp = find(cid, parents); // need to recheck cp -- it may be changed in last loop
+                        int np = find(nid, parents);
+                        if (np != cp) {
+                            count--;
+                            if (rank[cp] > rank[np]) {
+                                parents[np] = cp;
+                            }
+                            else {
+                                parents[cp] = np;
+                                if (rank[cp] == rank[np]) rank[np]++; // tiebreaking
+                            }
                         }
                     }
                 }
