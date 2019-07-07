@@ -26,33 +26,35 @@ public:
         for (int i = 1; i <= num.size() / 2; i++) {
             for (int j = 1; j <= (num.size() - i) / 2; j++) {
                 string a = num.substr(0, i);
+                if (a[0] == '0' && i > 1) continue;
                 string b = num.substr(i, j);
+                if (b[0] == '0' && j > 1) continue;
                 string c = num.substr(i + j);
-                if (check(a, b, c)) return true;
+                if (c[0] == '0' && c.size() > 1) continue;
+                if (additive(a, b, c)) return true;
             }
         }
         return false;
     }
 private:
-    bool check(string a, string b, string c) {
-        string sum = bigAdd(a, b);
-        if (sum == c) return true;
-        if (sum.size() >= c.size() || sum != c.substr(0, sum.size())) return false;
-        return check(b, c.substr(0, sum.size()), c.substr(sum.size()));
+    bool additive(string a, string b, string c) {
+        string aplusb = bigAdd(a, b);
+        if (aplusb == c) return true;
+        if (aplusb.size() >= c.size() || aplusb != c.substr(0, aplusb.size())) return false;
+        return additive(b, c.substr(0, aplusb.size()), c.substr(aplusb.size()));
     }
-    string bigAdd(string a, string b) {
-        string c;
-        int index1 = a.size() - 1;
-        int index2 = b.size() - 1;
+    string bigAdd(string& a, string& b) {
+        int indexa = a.size() - 1;
+        int indexb = b.size() - 1;
+        string res;
         int carry = 0;
-        while (index1 >= 0 || index2 >= 0 || carry > 0) {
-            int sum = carry;
-            if (index1 >= 0) sum += (a[index1--] - '0');
-            if (index2 >= 0) sum += (b[index2--] - '0');
+        while(indexa >= 0 || indexb >= 0 || carry > 0) {
+            int sum = carry; 
+            if (indexa >= 0) sum += (a[indexa--] - '0');    
+            if (indexb >= 0) sum += (b[indexb--] - '0');
             carry = sum / 10;
-            sum %= 10;
-            c = to_string(sum) + c;
+            res = to_string(sum % 10) + res;
         }
-        return c;
+        return res;
     }
 };
